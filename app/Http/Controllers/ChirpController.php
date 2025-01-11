@@ -34,15 +34,20 @@ class ChirpController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request): RedirectResponse
-    {
-        $validated = $request->validate([
-            'message' => 'required|string|max:255',
-        ]);
- 
-        $request->user()->chirps()->create($validated);
- 
-        return redirect(route('chirps.index'));
-    }
+{
+    $validated = $request->validate([
+        'message' => 'required|string|max:255',
+        'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+    ]);
+
+    $file = $request->file('image');
+    $path = $file->store('images', 'public');
+
+    $request->user()->chirps()->create($validated);
+
+    return redirect(route('chirps.index'));
+}
+
 
     /**
      * Display the specified resource.
